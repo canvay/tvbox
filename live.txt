@@ -1,6 +1,4 @@
 央视频道,#genre#
-CCTV2 财经,http://58.19.38.162:9901/tsfile/live/1001_1.m3u8?key=txiptv&playlive=1&authid=0
-
 CCTV1 综合,http://[2409:8087:1a01:df::7005]/ottrrs.hl.chinamobile.com/yinhe/88888888/224/3221226559/index.m3u8
 CCTV2 财经,http://[2409:8087:1a01:df::7005]/ottrrs.hl.chinamobile.com/yinhe/88888888/224/3221226540/index.m3u8
 CCTV4 中文国际,http://[2409:8087:1a01:df::7005]/ottrrs.hl.chinamobile.com/yinhe/88888888/224/3221226428/index.m3u8
@@ -16,6 +14,10 @@ CCTV13 新闻,http://[2409:8087:1a01:df::7005]/ottrrs.hl.chinamobile.com/yinhe/8
 CCTV15 音乐,http://[2409:8087:1a01:df::7005]/ottrrs.hl.chinamobile.com/yinhe/88888888/224/3221226476/index.m3u8
 CCTV16 奥林匹克,http://[2409:8087:1a01:df::7005]/ottrrs.hl.chinamobile.com/yinhe/88888888/224/3221226100/index.m3u8
 CCTV17 农业农村,http://[2409:8087:1a01:df::7005]/ottrrs.hl.chinamobile.com/yinhe/88888888/224/3221225765/index.m3u8
+
+CCTV2 财经,http://gslbservzqhsw.itv.cmvideo.cn/0000000000001000/1000000001000023315/index.m3u8?livemode=1&stbId=10&channel-id=ystenlive&Contentid=1000000001000023315
+CCTV2 财经,http://123.114.19.80:4000/rtp/239.3.1.60:8084
+CCTV2 财经,http://tvbox6.icu/tv/migu.php?id=cctv2
 
 CCTV1 综合,http://[2409:8087:5e00:24::1e]:6060/200000001898/460000089800010011/1.m3u8
 CCTV5 体育,http://[2409:8087:5e00:24::1e]:6060/200000001898/460000089800010078/1.m3u8
@@ -183,6 +185,7 @@ CCTV11 戏曲,http://1.24.190.98:10080/hls/11/index.m3u8
 CCTV12 社会与法,http://1.24.190.98:10080/hls/12/index.m3u8
 CCTV15 音乐,http://1.24.190.98:10080/hls/15/index.m3u8
 
+CCTV2 财经,http://58.19.38.162:9901/tsfile/live/1001_1.m3u8?key=txiptv&playlive=1&authid=0
 CCTV2 财经,http://110.80.17.38:9901/tsfile/live/0002_1.m3u8?key=txiptv
 CCTV4 中文国际,http://110.80.17.38:9901/tsfile/live/0004_1.m3u8?key=txiptv
 CCTV5 体育,http://110.80.17.38:9901/tsfile/live/0005_1.m3u8?key=txiptv
