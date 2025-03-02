@@ -106,6 +106,13 @@
         "changeable": 1
       }
     ],
-    "lives": {},
+    "lives": [
+        {
+            "name": "tvlive",
+            "type": 0,
+            "url": "https://github.jobcher.com/gh/https://raw.githubusercontent.com/qubitsky/tvbox/refs/heads/main/live.txt",
+            "playerType": 2
+        }
+    ],
     "parses": []
   }
