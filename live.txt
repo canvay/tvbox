@@ -8,7 +8,7 @@ CCTV2 财经,http://php.jdshipin.com/TVOD/hljyd.php?id=3221225588
 CCTV2 财经,http://111.29.9.33:6610/000000001000/1000000001000012442/index.m3u8?channel-id=bestzb&Contentid=1000000001000012442&livemode=1&stbId=3
 CCTV2 财经,http://120.192.226.35:8009/hls/502/index.m3u8
 CCTV2 财经,http://110.53.52.63:8888/newlive/live/hls/3/live.m3u8
-CCTV2 财经 财经,http://[2409:8087:1a01:df::7005]/ottrrs.hl.chinamobile.com/yinhe/88888888/224/3221226540/index.m3u8
+CCTV2 财经,http://[2409:8087:1a01:df::7005]/ottrrs.hl.chinamobile.com/yinhe/88888888/224/3221226540/index.m3u8
 CCTV2 财经,http://gslbservzqhsw.itv.cmvideo.cn/0000000000001000/1000000001000023315/index.m3u8?livemode=1&stbId=10&channel-id=ystenlive&Contentid=1000000001000023315
 CCTV2 财经,http://123.114.19.80:4000/rtp/239.3.1.60:8084
 CCTV2 财经,http://tvbox6.icu/tv/migu.php?id=cctv2
