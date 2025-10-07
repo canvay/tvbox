@@ -5,12 +5,53 @@
   "sites": [
     {
       "key": "豆",
-      "name": "🐲青龙推荐",
+      "name": "🐲青龙推荐0929",
       "type": 3,
       "api": "csp_DouDouGuard",
       "indexs": 1,
       "searchable": 0,
       "filterable": 0
+    },
+    {
+      "key": "本地更新",
+      "name": "📂神州更新",
+      "type": 3,
+      "jar": "https://gitee.com/liu_wuyou/box/raw/master/jar/%E6%9C%AC%E5%9C%B0%E6%9B%B4%E6%96%B0.jar",
+      "api": "csp_Market",
+      "searchable": 0,
+      "changeable": 0,
+      "indexs": 0,
+      "ext": "https://gitee.com/yiwu369/6758/raw/master/6758.txt"
+    },
+    {
+      "key": "py_腾",
+      "name": "☘️腾讯视频",
+      "type": 3,
+      "api": "./txvideo.py",
+      "searchable": 1,
+      "quickSearch": 0,
+      "filterable": 0,
+      "changeable": 0
+    },
+    {
+      "key": "甜圈短剧",
+      "name": "🍑甜圈短剧",
+      "type": 3,
+      "api": "./甜圈短剧.py",
+      "searchable": 1,
+      "changeable": 1,
+      "quickSearch": 1,
+      "filterable": 1
+    },
+    {
+      "key": "河马短剧",
+      "name": "🍇河马短剧",
+      "type": 3,
+      "api": "./河马短剧.py",
+      "searchable": 1,
+      "changeable": 1,
+      "quickSearch": 1,
+      "filterable": 1
     },
     {
       "key": "浪酷弹幕版",
@@ -48,17 +89,6 @@
         "danmu": true
       },
       "timeout": 10
-    },
-    {
-      "key": "天天",
-      "name": "🍇天天秒播",
-      "jar": "http://tv.laohu.cool/lh250220.jar;md5;6878c4945c8ddfa80b052f14311377f2",
-      "type": 3,
-      "api": "csp_TTian",
-      "searchable": 1,
-      "changeable": 1,
-      "playerType": 1,
-      "ext": "baHR0cDovL3R0LnlzZHFqcy5jbg=="
     },
     {
       "key": "追剧",
@@ -227,79 +257,6 @@
       "changeable": 1
     },
     {
-      "key": "戏曲",
-      "name": "🅰️广东潮剧",
-      "jar": "https://gitee.com/yiwu369/6758/raw/master/jar/Yoursmile.jar",
-      "type": 3,
-      "api": "csp_Bili",
-      "searchable": 0,
-      "changeable": 1,
-      "filterable": 1,
-      "style": {
-        "type": "rect",
-        "ratio": 1.433
-      },
-      "ext": {
-        "json": "https://gitee.com/yiwu369/6758/raw/master/jar/Blixq.json",
-        "cookie": ""
-      }
-    },
-    {
-      "key": "csp_XYQHiker_戏曲多多",
-      "name": "🅱️广东潮剧",
-      "jar": "https://gitee.com/yiwu369/6758/raw/master/jar/custom_spider.jar",
-      "type": 3,
-      "api": "csp_XYQHiker",
-      "searchable": 0,
-      "changeable": 1,
-      "filterable": 1,
-      "ext": "https://gitee.com/yiwu369/6758/raw/master/jar/%E6%88%8F%E6%9B%B2%E5%A4%9A%E5%A4%9A.json",
-      "categories": ["潮剧"]
-    },
-    {
-      "key": "Wexbiliys",
-      "name": "🅱️哔哩影视",
-      "jar": "./wex.jar",
-      "type": 3,
-      "api": "csp_WexbiliysGuard",
-      "searchable": 1,
-      "changeable": 1
-    },
-    {
-      "key": "bili",
-      "name": "🅱️哔哩合集",
-      "jar": "./wex.jar",
-      "type": 3,
-      "api": "csp_BiliGuard",
-      "searchable": 1,
-      "changeable": 1,
-      "filterable": 1,
-      "style": {
-        "type": "rect",
-        "ratio": 1.433
-      },
-      "ext": {
-        "json": "https://fs-im-kefu.7moor-fs1.com/ly/4d2c3f00-7d4c-11e5-af15-41bf63ae4ea0/1730557872081/bili001.txt"
-      }
-    },
-    {
-      "key": "biliych",
-      "name": "🅱️哔哩歌曲",
-      "jar": "./wex.jar",
-      "type": 3,
-      "api": "csp_BiliGuard",
-      "searchable": 1,
-      "changeable": 1,
-      "filterable": 1,
-      "style": {
-        "type": "rect",
-        "ratio": 1.433
-      },
-      "ext": {
-        "json": "https://fs-im-kefu.7moor-fs1.com/ly/4d2c3f00-7d4c-11e5-af15-41bf63ae4ea0/1730557798499/bilisong.txt"
-      }
-    },
-    {
       "key": "360_spider",
       "name": "🔰360秒播",
       "jar": "https://gitee.com/yiwu369/6758/raw/master/jar/Hk.jar",
@@ -378,16 +335,38 @@
         "斯诺克",
         "影视解说"
       ]
+    }
+  ],
+  "doh": [
+    {
+      "name": "Google",
+      "url": "https://dns.google/dns-query",
+      "ips": ["8.8.4.4", "8.8.8.8"]
     },
     {
-      "key": "zxzj",
-      "name": "🍊在线秒播",
-      "type": 3,
-      "api": "csp_ZxzjGuard",
-      "searchable": 1,
-      "changeable": 1,
-      "timeout": 15,
-      "ext": "https://www.zxzjhd.com/"
+      "name": "Cloudflare",
+      "url": "https://cloudflare-dns.com/dns-query",
+      "ips": [
+        "1.1.1.1",
+        "1.0.0.1",
+        "2606:4700:4700::1111",
+        "2606:4700:4700::1001"
+      ]
+    },
+    {
+      "name": "AdGuard",
+      "url": "https://dns.adguard.com/dns-query",
+      "ips": ["94.140.14.140", "94.140.14.141"]
+    },
+    {
+      "name": "DNSWatch",
+      "url": "https://resolver2.dns.watch/dns-query",
+      "ips": ["84.200.69.80", "84.200.70.40"]
+    },
+    {
+      "name": "Quad9",
+      "url": "https://dns.quad9.net/dns-quer",
+      "ips": ["9.9.9.9", "149.112.112.112"]
     }
   ],
   "lives": [
