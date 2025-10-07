@@ -16,7 +16,7 @@ CCTV15,https://zby.130519.xyz/PLTV/11/224/3221226147/index.m3u8
 浙江卫视,https://ali-m-l.cztv.com/channels/lantian/channel001/1080p.m3u8
 北京卫视,https://zby.130519.xyz/PLTV/11/224/3221225724/index.m3u8
 兵团卫视,https://liveout.btzx.com.cn/62ds9e/yil08g.m3u8
-东方卫视,https://zby.130519.xyz/PLTV/11/224/3221226050/index.m3u8
+东方卫视,https://zby.130519.xyz/PLTV/11/224/3221225725/index.m3u8
 东南卫视,https://zby.130519.xyz/PLTV/11/224/3221225745/index.m3u8
 甘肃卫视,https://zby.130519.xyz/PLTV/11/224/3221226090/index.m3u8
 广西卫视,https://zby.130519.xyz/PLTV/11/224/3221226130/index.m3u8
