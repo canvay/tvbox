@@ -68,6 +68,7 @@
     <div class="tab active" data-t="single">单站测试</div>
     <div class="tab" data-t="batch">批量测试</div>
     <div class="tab" data-t="maccms">MacCMS 结构</div>
+    <div class="tab" data-t="list">默认资源列表</div>
   </div>
 
   <!-- 单站测试 -->
@@ -136,6 +137,18 @@
           <div id="m-out3" class="step-result"><div class="meta">尚未下钻，请先在步骤②点击某个 vod_id</div></div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- 默认资源列表 -->
+  <div class="panel" id="p-list">
+    <div class="card">
+      <div class="meta">以下清单来自脚本顶部 <code>STATIONS</code> 常量，共 <span id="list-count">0</span> 条，与「批量测试 / MacCMS」共用同一数据源。点击地址可复制。</div>
+      <div style="margin-top:12px">
+        <button id="list-to-batch">载入到批量测试</button>
+        <button class="sec" id="list-copy">复制全部</button>
+      </div>
+      <div id="list-out" style="margin-top:14px"></div>
     </div>
   </div>
 
@@ -209,6 +222,24 @@ $('b-load').onclick=()=>{$('b-list').value=DEFAULT_LIST};
     });
   });
 })();
+
+/* 默认资源列表 */
+function renderStationList(){
+  let rows='';
+  STATIONS.forEach(s=>{
+    rows+=`<tr><td>${esc(s.name)}</td><td class="ps-url" title="点击复制" data-url="${esc(s.url)}">${esc(s.url)}</td></tr>`;
+  });
+  $('list-count').textContent=STATIONS.length;
+  $('list-out').innerHTML=`<table><thead><tr><th>名称</th><th>API 地址（点击复制）</th></tr></thead><tbody>${rows}</tbody></table>`;
+  $('list-out').querySelectorAll('td.ps-url').forEach(td=>{
+    td.onclick=()=>{navigator.clipboard.writeText(td.dataset.url).then(()=>{td.style.color='#16a34a';setTimeout(()=>td.style.color='',800);});};
+  });
+}
+renderStationList();
+$('list-to-batch').onclick=()=>{$('b-list').value=DEFAULT_LIST;document.querySelector('.tab[data-t="batch"]').click();};
+$('list-copy').onclick=async()=>{
+  try{await navigator.clipboard.writeText(DEFAULT_LIST);const b=$('list-copy');b.textContent='已复制';setTimeout(()=>b.textContent='复制全部',1500);}catch(e){}
+};
 
 /* 输入框清空按钮：点击 × 清空对应输入框（仅在已有内容时显示） */
 document.querySelectorAll('.clear-btn').forEach(btn=>{
