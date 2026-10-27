@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>资源站 / 解析接口 测试操作台</title>
+<style>
+  :root{
+    --bg:#f6f7f9; --card:#ffffff; --line:#e3e6ea; --text:#1f2329;
+    --muted:#8a9099; --accent:#2f6bff; --ok:#1f9d55; --err:#d73a49; --warn:#c97a00;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text)}
+  header{padding:16px 22px;border-bottom:1px solid var(--line);background:var(--card)}
+  header h1{margin:0;font-size:17px}
+  header p{margin:4px 0 0;font-size:12px;color:var(--muted)}
+  .wrap{max-width:1080px;margin:0 auto;padding:18px 22px}
+  .tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+  .tab{padding:8px 14px;border:1px solid var(--line);background:var(--card);border-radius:8px;cursor:pointer;font-size:13px}
+  .tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .panel{display:none}
+  .panel.active{display:block}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;margin-bottom:14px}
+  label{display:block;font-size:12px;color:var(--muted);margin:0 0 6px}
+  input[type=text],textarea,select{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:8px;font-size:13px;background:#fff;color:var(--text);font-family:inherit}
+  textarea{resize:vertical;min-height:120px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px}
+  .row{display:flex;gap:10px;margin-bottom:12px}
+  .row>*{flex:1}
+  button{background:var(--accent);color:#fff;border:0;border-radius:8px;padding:9px 16px;font-size:13px;cursor:pointer}
+  button.sec{background:#eef1f6;color:var(--text)}
+  button:disabled{opacity:.5;cursor:default}
+  .badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600;color:#fff}
+  .b-ok{background:var(--ok)} .b-err{background:var(--err)} .b-warn{background:var(--warn)} .b-info{background:#6b7785}
+  pre{background:#0f1115;color:#e6edf3;padding:14px;border-radius:8px;overflow:auto;font-size:12px;line-height:1.5;max-height:420px}
+  table{width:100%;border-collapse:collapse;font-size:12.5px}
+  th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--muted);font-weight:600;background:#fafbfc}
+  .meta{font-size:12px;color:var(--muted);margin:6px 0}
+  .clickable{cursor:pointer;color:var(--accent);text-decoration:underline}
+  .hint{font-size:11.5px;color:var(--muted);margin-top:6px}
+  .pill{display:inline-block;padding:1px 7px;border-radius:6px;background:#eef1f6;font-size:11px;margin:2px 4px 2px 0;cursor:pointer}
+  /* MacCMS 步骤卡片 */
+  .step-card{border:1px solid var(--line);border-radius:10px;margin-top:14px;overflow:hidden}
+  .step-bar{display:flex;align-items:center;gap:8px;padding:10px 14px;background:#fafbfc;border-bottom:1px solid var(--line)}
+  .step-num{display:inline-flex;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex:0 0 auto}
+  .step-title{font-size:13.5px;font-weight:600}
+  .step-body{padding:14px}
+  .step-actions{margin-bottom:10px}
+  .step-result{min-height:10px}
+  tr.sel{background:#e8f0ff}
+  .ps-url{color:var(--accent);text-decoration:underline;cursor:pointer}
+  .ps-url:hover{color:#1a4fd6}
+  /* 输入框清空按钮 */
+  .input-wrap{position:relative}
+  .input-wrap input{padding-right:34px}
+  .clear-btn{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:22px;height:22px;display:flex;align-items:center;justify-content:center;border:0;background:transparent;color:var(--muted);font-size:18px;line-height:1;cursor:pointer;border-radius:50%}
+  .clear-btn:hover{background:#eef1f6;color:var(--text)}
+  .clear-btn[hidden]{display:none}
+</style>
+</head>
+<body>
+<header>
+  <h1>资源站 / 解析接口 测试操作台</h1>
+  <p>本地运行 · 服务端代发请求绕过 CORS · 仅做连通性与响应校验，不下载任何视频</p>
+</header>
+<div class="wrap">
+  <div class="tabs">
+    <div class="tab active" data-t="single">单站测试</div>
+    <div class="tab" data-t="batch">批量测试</div>
+    <div class="tab" data-t="maccms">MacCMS 结构</div>
+  </div>
+
+  <!-- 单站测试 -->
+  <div class="panel active" id="p-single">
+    <div class="card">
+      <div class="row">
+        <div><label>请求 URL</label><div class="input-wrap"><input id="s-url" type="text" list="s-acc" placeholder="https://example.com/api.php/provide/vod/?ac=videolist&at=json&pg=1" autocomplete="off"><button type="button" class="clear-btn" data-target="s-url" title="清空" hidden>×</button></div></div>
+        <datalist id="s-acc"></datalist>
+        <div style="flex:0 0 120px"><label>方法</label>
+          <select id="s-method"><option>GET</option><option>POST</option><option>HEAD</option></select>
+        </div>
+      </div>
+      <label>附加 Headers（每行 key: value，可选）</label>
+      <textarea id="s-headers" style="min-height:60px" placeholder="Referer: https://www.baidu.com/"></textarea>
+      <div style="margin-top:12px"><button id="s-run">发起测试</button></div>
+      <div id="s-result" style="margin-top:14px"></div>
+    </div>
+  </div>
+
+  <!-- 批量测试 -->
+  <div class="panel" id="p-batch">
+    <div class="card">
+      <label>站点列表（每行一个，格式：名称 | URL）</label>
+      <textarea id="b-list"></textarea>
+      <div class="hint">只填 URL 也行（名称留空）。脚本会向每个 URL 发 GET 并校验响应合法性。</div>
+      <div style="margin-top:12px"><button id="b-run">批量运行</button> <button class="sec" id="b-load">载入默认清单</button></div>
+      <div id="b-result" style="margin-top:14px"></div>
+    </div>
+  </div>
+
+  <!-- MacCMS 结构 -->
+  <div class="panel" id="p-maccms">
+    <div class="card">
+      <label>资源站 API 根路径</label>
+      <div class="input-wrap">
+        <input id="m-base" type="text" list="m-acc" placeholder="https://example.com/api.php/provide/vod" autocomplete="off">
+        <button type="button" class="clear-btn" data-target="m-base" title="清空" hidden>×</button>
+      </div>
+      <datalist id="m-acc"></datalist>
+      <div class="hint">点击输入框右侧下拉箭头可从「预填清单」选择，也可直接输入。清单在脚本顶部 <code>STATIONS</code> 一处维护（与「批量测试」共用）。</div>
+
+      <!-- 步骤①：列分类 -->
+      <div class="step-card">
+        <div class="step-bar"><span class="step-num">①</span><span class="step-title">列分类 ac=list</span></div>
+        <div class="step-body">
+          <div class="step-actions"><button id="m-list">运行</button></div>
+          <div id="m-out1" class="step-result"></div>
+        </div>
+      </div>
+
+      <!-- 步骤②：列视频 -->
+      <div class="step-card">
+        <div class="step-bar"><span class="step-num">②</span><span class="step-title">列视频 ac=videolist</span></div>
+        <div class="step-body">
+          <div class="step-actions"><button id="m-video">运行</button></div>
+          <div class="hint">点击表格中的 vod_id（蓝字）可下钻到步骤③</div>
+          <div id="m-out2" class="step-result"></div>
+        </div>
+      </div>
+
+      <!-- 步骤③：播放源下钻 + HEAD 连通检测 -->
+      <div class="step-card">
+        <div class="step-bar"><span class="step-num">③</span><span class="step-title">播放源下钻 + HEAD 连通检测</span></div>
+        <div class="step-body">
+          <div class="hint">由步骤②点击 vod_id 触发；点击播放源地址做 HEAD 检测，结果直接显示在右侧</div>
+          <div id="m-out3" class="step-result"><div class="meta">尚未下钻，请先在步骤②点击某个 vod_id</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const $ = (id)=>document.getElementById(id);
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+  t.classList.add('active'); $('p-'+t.dataset.t).classList.add('active');
+});
+function badge(cls,txt){return `<span class="badge ${cls}">${txt}</span>`}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+
+async function api(path,payload){
+  const r = await fetch(path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+  return await r.json();
+}
+function parseHeaders(txt){const h={};txt.split('\n').forEach(l=>{const i=l.indexOf(':');if(i>0){h[l.slice(0,i).trim()]=l.slice(i+1).trim()}});return h}
+
+/* 单站 */
+$('s-run').onclick=async()=>{
+  const u=$('s-url').value.trim();
+  if(!u){$('s-result').innerHTML=`<div class="meta">${badge('b-err','提示')} 请先填写请求 URL 后再发起测试</div>`;return;}
+  const btn=$('s-run');btn.disabled=true;btn.textContent='请求中…';
+  const res=await api('/api/test',{url:u,method:$('s-method').value,headers:parseHeaders($('s-headers').value)});
+  btn.disabled=false;btn.textContent='发起测试';
+  let html='';
+  if(res.error){html=`<div class="meta">${badge('b-err','ERROR')} ${esc(res.error)}</div>`;}
+  else{
+    const cls=res.ok?'b-ok':'b-warn';
+    html=`<div class="meta">${badge(cls,res.status||'-')} ${res.time_ms}ms · ${esc(res.content_type||'')} · ${res.ok?badge('b-info','响应合法'):badge('b-warn','非空但非JSON/XML')}</div>`;
+    if(res.pretty) html+=`<pre>${esc(res.pretty)}</pre>`; else html+=`<pre>${esc(res.body.slice(0,3000))}</pre>`;
+  }
+  $('s-result').innerHTML=html;
+};
+
+/* 资源站预填清单 —— 只在此一处维护，MacCMS 预填与批量测试共用 */
+const STATIONS=[
+  {name:'爱奇艺', url:'https://iqiyizyapi.com/api.php/provide/vod'},
+  {name:'暴风',   url:'https://bfzyapi.com/api.php/provide/vod'},
+  {name:'豆瓣',   url:'https://dbzy.tv/api.php/provide/vod'},
+  {name:'360',    url:'https://360zy.com/api.php/provide/vod'},
+  {name:'极速',   url:'https://jszyapi.com/api.php/provide/vod'},
+  {name:'最大',   url:'https://api.zuidapi.com/api.php/provide/vod'},
+  {name:'猫眼',   url:'https://maoyanzy.com/api.php/provide/vod'},
+  {name:'卧龙',   url:'https://wolongzyw.com/api.php/provide/vod'},
+  {name:'iKun',   url:'https://ikunzyapi.com/api.php/provide/vod'},
+  {name:'樱花',   url:'https://m3u8.apiyhzy.com/api.php/provide/vod'},
+  {name:'金鹰',   url:'https://jinyingzy.com/api.php/provide/vod'},
+  {name:'天涯',   url:'https://tyyszy.com/api.php/provide/vod'},
+  {name:'OK资源', url:'https://api.okzyw.net/api.php/provide/vod'},
+  {name:'牛牛',   url:'https://api.niuniuzy.me/api.php/provide/vod'},
+  {name:'无尽',   url:'https://api.wujinapi.me/api.php/provide/vod'},
+  {name:'旺旺',   url:'https://api.wwzy.tv/api.php/provide/vod'},
+  {name:'速播',   url:'https://subocaiji.com/api.php/provide/vod'},
+];
+const DEFAULT_LIST = STATIONS.map(s=>`${s.name} | ${s.url}`).join("\n");
+
+/* 批量 */
+$('b-load').onclick=()=>{$('b-list').value=DEFAULT_LIST};
+
+/* 预填清单：为 MacCMS 与单点测试的输入框填充可选择的默认地址列表（不预填具体地址） */
+(function initPresets(){
+  ['m-acc','s-acc'].forEach(id=>{
+    const dl=$(id);
+    STATIONS.forEach(s=>{
+      const o=document.createElement('option');
+      o.value=s.url; o.label=s.name; dl.appendChild(o);
+    });
+  });
+})();
+
+/* 输入框清空按钮：点击 × 清空对应输入框（仅在已有内容时显示） */
+document.querySelectorAll('.clear-btn').forEach(btn=>{
+  const inp=$(btn.dataset.target);
+  const toggle=()=>{btn.hidden=!inp.value;};
+  btn.onclick=()=>{inp.value='';inp.focus();toggle();};
+  inp.addEventListener('input',toggle);
+  toggle();
+});
+$('b-run').onclick=async()=>{
+  const btn=$('b-run');btn.disabled=true;btn.textContent='探测中…';
+  const lines=$('b-list').value.split('\n').map(s=>s.trim()).filter(Boolean).map(s=>{
+    const i=s.indexOf('|');if(i<0)return{name:'',url:s};return{name:s.slice(0,i).trim(),url:s.slice(i+1).trim()};
+  });
+  const data=await api('/api/batch',{items:lines});
+  btn.disabled=false;btn.textContent='批量运行';
+  let rows='';
+  data.forEach(r=>{
+    const cls=r.ok?'b-ok':(r.status? 'b-warn':'b-err');
+    const tag=r.ok?badge('b-ok','存活'):(r.status?badge('b-warn','异常'):badge('b-err','不可达'));
+    rows+=`<tr><td>${esc(r.name||'-')}</td><td>${esc(r.url)}</td><td>${tag} ${r.status?r.status:''}</td><td>${r.time_ms||'-'}</td><td>${esc(r.detail||'')}</td></tr>`;
+  });
+  $('b-result').innerHTML=`<div class="meta">共 ${data.length} 个，存活 ${data.filter(r=>r.ok).length} 个</div><table><thead><tr><th>名称</th><th>URL</th><th>状态</th><th>耗时</th><th>详情</th></tr></thead><tbody>${rows}</tbody></table>`;
+};
+
+/* MacCMS */
+$('m-list').onclick=async()=>{
+  const btn=$('m-list');btn.disabled=true;btn.textContent='运行中…';
+  const base=$('m-base').value.trim().replace(/\/+$/,'');
+  const res=await api('/api/maccms',{base,action:'list'});
+  btn.disabled=false;btn.textContent='运行';
+  if(res.error){$('m-out1').innerHTML=`<div class="meta">${badge('b-err','ERROR')} ${esc(res.error)}</div>`;return;}
+  let rows='';
+  (res.list||[]).forEach(t=>{rows+=`<tr><td>${esc(t.type_id)}</td><td>${esc(t.type_name)}</td></tr>`;});
+  $('m-out1').innerHTML=`<div class="meta">${badge('b-ok',res.status)} ${res.time_ms}ms · 分类数 ${res.list?res.list.length:0}</div><table><thead><tr><th>type_id</th><th>type_name</th></tr></thead><tbody>${rows}</tbody></table>`;
+};
+$('m-video').onclick=async()=>{
+  const btn=$('m-video');btn.disabled=true;btn.textContent='运行中…';
+  const base=$('m-base').value.trim().replace(/\/+$/,'');
+  const res=await api('/api/maccms',{base,action:'videolist'});
+  btn.disabled=false;btn.textContent='运行';
+  if(res.error){$('m-out2').innerHTML=`<div class="meta">${badge('b-err','ERROR')} ${esc(res.error)}</div>`;return;}
+  let rows='';
+  (res.list||[]).forEach(v=>{
+    rows+=`<tr data-id="${esc(v.vod_id)}"><td class="ps-url">${esc(v.vod_id)}</td><td>${esc(v.vod_name)}</td><td>${esc(v.vod_remarks||'')}</td></tr>`;
+  });
+  $('m-out2').innerHTML=`<div class="meta">${badge('b-ok',res.status)} ${res.time_ms}ms · total=${res.total} · 本页 ${res.list?res.list.length:0} 条</div><table><thead><tr><th>vod_id（点击下钻）</th><th>名称</th><th>备注</th></tr></thead><tbody>${rows}</tbody></table>`;
+  // 绑定下钻：点击 vod_id 写入步骤③
+  $('m-out2').querySelectorAll('tr[data-id]').forEach(tr=>{
+    tr.querySelector('.ps-url').onclick=()=>mDetail(tr.dataset.id);
+  });
+  // 重新列视频时清空步骤③
+  $('m-out3').innerHTML='<div class="meta">尚未下钻，请先在步骤②点击某个 vod_id</div>';
+};
+async function mDetail(id){
+  const base=$('m-base').value.trim().replace(/\/+$/,'');
+  // 高亮步骤②中被选中的行，建立视觉对应
+  $('m-out2').querySelectorAll('tr[data-id]').forEach(tr=>tr.classList.toggle('sel',tr.dataset.id===id));
+  const res=await api('/api/maccms',{base,action:'detail',ids:id});
+  if(res.error){$('m-out3').innerHTML=`<div class="meta">${badge('b-err','ERROR')} ${esc(res.error)}</div>`;return;}
+  const v=res.detail;
+  let rows='';
+  (v.play_urls||[]).forEach((u)=>{
+    rows+=`<tr data-url="${esc(u)}"><td class="ps-url" title="${esc(u)}">${esc(u.length>70?u.slice(0,70)+'…':u)}</td><td class="ps-status"><span class="badge b-info">待检测</span></td></tr>`;
+  });
+  $('m-out3').innerHTML=`<div class="meta">${badge('b-info','详情')} ${esc(v.vod_name||'')} · 播放源 ${v.play_urls?v.play_urls.length:0} 个（点击左侧地址做 HEAD 检测）</div>
+    <table><thead><tr><th>播放源地址</th><th>HEAD 检测</th></tr></thead><tbody>${rows}</tbody></table>`;
+  // 绑定播放源 HEAD 检测
+  $('m-out3').querySelectorAll('tr[data-url]').forEach(tr=>{
+    tr.querySelector('.ps-url').onclick=()=>mPlay(tr);
+  });
+}
+async function mPlay(tr){
+  const u=tr.dataset.url;
+  const cell=tr.querySelector('.ps-status');
+  cell.innerHTML='<span class="badge b-info">检测中…</span>';
+  const res=await api('/api/test',{url:u,method:'HEAD'});
+  if(res.error){
+    cell.innerHTML=`<span class="badge b-err">✗ ${esc(String(res.error).slice(0,30))}</span>`;
+  }else{
+    const ok=res.status && res.status<400;
+    cell.innerHTML=`<span class="badge ${ok?'b-ok':'b-warn'}">${ok?'✓':'⚠'} ${res.status||'-'} ${res.time_ms||''}ms</span>`;
+  }
+}
+</script>
+</body>
+</html>
