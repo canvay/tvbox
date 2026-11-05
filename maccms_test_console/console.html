@@ -69,6 +69,8 @@
     <div class="tab" data-t="batch">批量测试</div>
     <div class="tab" data-t="maccms">MacCMS 结构</div>
     <div class="tab" data-t="list">默认资源列表</div>
+    <div class="tab" data-t="engine">Python 引擎测试</div>
+    <div class="tab" data-t="config">配置生成</div>
   </div>
 
   <!-- 单站测试 -->
@@ -149,6 +151,82 @@
         <button class="sec" id="list-copy">复制全部</button>
       </div>
       <div id="list-out" style="margin-top:14px"></div>
+    </div>
+  </div>
+
+  <!-- Python 引擎测试 -->
+  <div class="panel" id="p-engine">
+    <div class="card">
+      <div class="meta">粘贴 TVBox / 影视仓 的 py 引擎代码（需包含继承自 <code>base.spider.Spider</code> 的类）。后端会用桩替掉 <code>base.spider</code>，并调用其方法。<b>注意：本页会执行你粘贴的任意 Python 代码，仅用于本地、且你信任的引擎。</b></div>
+      <label style="margin-top:12px">引擎代码</label>
+      <textarea id="e-code" style="min-height:200px;font-family:ui-monospace,Consolas,monospace;font-size:12px" placeholder="from base.spider import Spider&#10;class Spider(Spider):&#10;    def homeContent(self, filter):&#10;        ...&#10;    def detailContent(self, ids):&#10;        ..."></textarea>
+      <div class="row" style="margin-top:12px">
+        <div style="flex:0 0 200px"><label>方法</label>
+          <select id="e-method">
+            <option value="homeContent">homeContent</option>
+            <option value="categoryContent">categoryContent</option>
+            <option value="detailContent">detailContent</option>
+            <option value="playerContent">playerContent</option>
+            <option value="searchContent">searchContent</option>
+          </select>
+        </div>
+        <div style="flex:1"><label>参数（JSON 数组，按方法签名顺序）</label>
+          <input id="e-args" type="text" placeholder='homeContent: [false]  |  detailContent: ["961@181600"]'>
+        </div>
+      </div>
+      <div class="hint">参数示例：homeContent→<code>[false]</code>；detailContent→<code>["vod_id"]</code>；categoryContent→<code>["1","1",{},{}]</code>；playerContent→<code>["flag","url",""]</code>；searchContent→<code>["关键词",false]</code></div>
+      <div style="margin-top:12px">
+        <button id="e-run">运行方法</button>
+        <button class="sec" id="e-chain">运行全链路(home→detail→player)</button>
+        <button class="sec" id="e-sample">填入示例引擎</button>
+      </div>
+      <div id="e-result" style="margin-top:14px"></div>
+    </div>
+  </div>
+
+  <!-- 配置生成 -->
+  <div class="panel" id="p-config">
+    <div class="card">
+      <div class="meta">把已订阅的点播源接口（MacCMS 标准 <code>/api.php/provide/vod</code>）生成 TVBox / 影视仓 配置 JSON。单源 / 多源均可。</div>
+
+      <div class="row" style="margin-top:12px">
+        <div style="flex:0 0 260px"><label>全局源类型</label>
+          <select id="cfg-type">
+            <option value="1">1 · 正常源（MacCMS 标准）</option>
+            <option value="0">0 · 解析源</option>
+            <option value="3">3 · 爬虫(spider / drpy)</option>
+            <option value="4">4 · 自定义</option>
+          </select>
+        </div>
+        <div style="flex:0 0 160px"><label>&nbsp;</label>
+          <label style="display:flex;align-items:center;gap:6px;margin:0;color:var(--text);font-size:13px"><input type="checkbox" id="cfg-search" checked style="width:auto"> 可搜索 searchable</label>
+        </div>
+      </div>
+      <div class="hint">类型与可搜索开关会应用到下方列表里的<b>每一个</b>源。MacCMS 标准点播源用 type=1 即可。</div>
+
+      <label style="margin-top:14px">源列表（每行：名称 | URL，只填 URL 也可）</label>
+      <textarea id="cfg-list" style="min-height:140px" placeholder="爱奇艺 | https://iqiyizyapi.com/api.php/provide/vod&#10;暴风 | https://bfzyapi.com/api.php/provide/vod"></textarea>
+      <div class="hint">格式与「批量测试 / 默认资源列表」一致。点「解析并预览」生成；「从默认清单载入」可一键填入现有 STATIONS。</div>
+      <div style="margin-top:12px">
+        <button id="cfg-parse">解析并预览</button>
+        <button class="sec" id="cfg-load">从默认清单载入</button>
+        <button class="sec" id="cfg-clear">清空</button>
+      </div>
+
+      <label style="margin-top:14px">壁纸 wallpaper（可选）</label>
+      <div class="input-wrap">
+        <input id="cfg-wall" type="text" placeholder="https://example.com/bg.jpg" autocomplete="off">
+        <button type="button" class="clear-btn" data-target="cfg-wall" title="清空" hidden>×</button>
+      </div>
+
+      <label style="margin-top:12px">爬虫代码 spider（可选，type=3 时需要）</label>
+      <textarea id="cfg-spider" style="min-height:90px" placeholder="留空则 spider 为空；type=3 的源也可在 site.ext 内填 spider 代码"></textarea>
+
+      <div style="margin-top:14px">
+        <button id="cfg-copy">复制 JSON</button>
+        <button class="sec" id="cfg-download">下载 tvbox.json</button>
+      </div>
+      <div id="cfg-result" style="margin-top:14px"></div>
     </div>
   </div>
 
@@ -239,6 +317,118 @@ renderStationList();
 $('list-to-batch').onclick=()=>{$('b-list').value=DEFAULT_LIST;document.querySelector('.tab[data-t="batch"]').click();};
 $('list-copy').onclick=async()=>{
   try{await navigator.clipboard.writeText(DEFAULT_LIST);const b=$('list-copy');b.textContent='已复制';setTimeout(()=>b.textContent='复制全部',1500);}catch(e){}
+};
+
+/* Python 引擎测试 */
+const ENGINE_SAMPLE = `from base.spider import Spider
+import json
+
+class Spider(Spider):
+    def init(self, extend=""):
+        self.base = "https://iqiyizyapi.com/api.php/provide/vod"
+    def homeContent(self, filter):
+        return {"class":[{"type_id":"1","type_name":"电影"}],"list":[{"vod_id":"1","vod_name":"示例影片"}]}
+    def categoryContent(self, tid, pg, flt, extend):
+        r = self.fetch(self.base + "/?ac=videolist&at=json&t=" + str(tid) + "&pg=" + str(pg))
+        obj = json.loads(r)
+        lst = []
+        for v in (obj.get("list") or []):
+            lst.append({"vod_id":v.get("vod_id"),"vod_name":v.get("vod_name")})
+        return {"list":lst,"page":pg,"pagecount":obj.get("pagecount",1)}
+    def detailContent(self, ids):
+        r = self.fetch(self.base + "/?ac=detail&at=json&ids=" + ids[0])
+        obj = json.loads(r)
+        v = (obj.get("list") or [{}])[0]
+        return {"list":[{"vod_id":v.get("vod_id"),"vod_name":v.get("vod_name"),"vod_play_url":v.get("vod_play_url","")}]}
+    def playerContent(self, flag, id, vipFlags):
+        return {"playUrl":id,"parse":0}
+    def searchContent(self, key, quick):
+        r = self.fetch(self.base + "/?ac=videolist&at=json&wd=" + key)
+        obj = json.loads(r)
+        lst = []
+        for v in (obj.get("list") or []):
+            lst.append({"vod_id":v.get("vod_id"),"vod_name":v.get("vod_name")})
+        return {"list":lst}
+`;
+$('e-sample').onclick=()=>{$('e-code').value=ENGINE_SAMPLE;};
+async function runEngine(mode){
+  const code=$('e-code').value;
+  if(!code.trim()){$('e-result').innerHTML=`<div class="meta">${badge('b-err','提示')} 请先粘贴或填入引擎代码</div>`;return;}
+  let args=[];
+  if(mode==='method'){
+    try{args=JSON.parse($('e-args').value||'[]');}catch(e){$('e-result').innerHTML=`<div class="meta">${badge('b-err','ERROR')} 参数不是合法 JSON 数组</div>`;return;}
+  }
+  const btn = mode==='chain'?$('e-chain'):$('e-run');
+  btn.disabled=true;btn.textContent='执行中…';
+  const res=await api('/api/engine',{code,method:$('e-method').value,args,mode});
+  btn.disabled=false;btn.textContent= mode==='chain'?'运行全链路(home→detail→player)':'运行方法';
+  if(res.error){$('e-result').innerHTML=`<div class="meta">${badge('b-err','ERROR')} ${esc(res.error)}</div>`;return;}
+  let html=`<div class="meta">${badge('b-ok',res.class||'?')} 模式: ${res.mode==='chain'?'全链路':res.method}`;
+  if(res.schema){
+    if(res.schema.ok) html+=` · ${badge('b-ok','schema 合规')}`;
+    else html+=` · ${badge('b-warn','schema 缺失')} ${esc(res.schema.notes.join('; '))}`;
+  }
+  html+=`</div>`;
+  if(res.steps && res.steps.length>1){
+    html+='<div style="margin-top:8px">';
+    res.steps.forEach(s=>{const cls=s.ok?'b-ok':'b-err';html+=`<div class="meta">${badge(cls,s.step)} ${s.ok?'✓':('✗ '+esc(s.error||''))}</div>`;});
+    html+='</div>';
+  }
+  if(res.logs&&res.logs.length) html+=`<div class="meta">引擎输出：${esc(res.logs.join(' | '))}</div>`;
+  if(res.result!==null&&res.result!==undefined) html+=`<pre>${esc(JSON.stringify(res.result,null,2))}</pre>`;
+  $('e-result').innerHTML=html;
+}
+$('e-run').onclick=()=>runEngine('method');
+$('e-chain').onclick=()=>runEngine('chain');
+
+/* 配置生成 */
+function buildConfig(){
+  const type = parseInt($('cfg-type').value,10);
+  const searchable = $('cfg-search').checked ? 1 : 0;
+  const lines = $('cfg-list').value.split('\n').map(s=>s.trim()).filter(Boolean);
+  const sites = [];
+  lines.forEach(s=>{
+    const i=s.indexOf('|');
+    let name='', url=s;
+    if(i>=0){name=s.slice(0,i).trim(); url=s.slice(i+1).trim();}
+    if(!url) return;
+    let key='';
+    try{const h=new URL(url).hostname; key=h.replace(/^www\./,'').replace(/[^a-zA-Z0-9]/g,'');}catch(e){key=url.replace(/[^a-zA-Z0-9]/g,'').slice(0,20);}
+    if(!name) name=key;
+    sites.push({key,name,type,api:url,searchable,ext:'',jar:''});
+  });
+  return {
+    spider: $('cfg-spider').value || '',
+    sites,
+    flags:[], parses:[], rules:[],
+    wallpaper: $('cfg-wall').value.trim() || '',
+    lives:[]
+  };
+}
+function renderConfig(){
+  const cfg=buildConfig();
+  if(!cfg.sites.length){
+    $('cfg-result').innerHTML=`<div class="meta">${badge('b-warn','提示')} 源列表为空，请先粘贴「名称 | URL」或点「从默认清单载入」</div>`;
+    return;
+  }
+  const text=JSON.stringify(cfg,null,2);
+  $('cfg-result').innerHTML=`<div class="meta">${badge('b-ok',cfg.sites.length+' 个源')} · type ${cfg.sites[0].type} · searchable ${cfg.sites[0].searchable}${cfg.sites[0].type===3&&!cfg.spider?' · '+badge('b-warn','type=3 但 spider 为空'):''}</div><pre>${esc(text)}</pre>`;
+  window.__cfgText=text;
+}
+$('cfg-parse').onclick=renderConfig;
+$('cfg-load').onclick=()=>{$('cfg-list').value=DEFAULT_LIST; renderConfig();};
+$('cfg-clear').onclick=()=>{$('cfg-list').value=''; $('cfg-result').innerHTML=''; window.__cfgText='';};
+$('cfg-copy').onclick=async()=>{
+  if(!window.__cfgText) renderConfig();
+  if(!window.__cfgText) return;
+  try{await navigator.clipboard.writeText(window.__cfgText);const b=$('cfg-copy');b.textContent='已复制';setTimeout(()=>b.textContent='复制 JSON',1500);}catch(e){}
+};
+$('cfg-download').onclick=()=>{
+  if(!window.__cfgText) renderConfig();
+  if(!window.__cfgText) return;
+  const blob=new Blob([window.__cfgText],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='tvbox.json';a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
 };
 
 /* 输入框清空按钮：点击 × 清空对应输入框（仅在已有内容时显示） */

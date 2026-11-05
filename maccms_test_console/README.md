@@ -12,13 +12,16 @@ python web_console.py          # 监听 0.0.0.0:8000
 # 浏览器打开 http://localhost:8000
 ```
 
-## 功能（四个标签页）
+## 功能（标签页）
 
 | 标签页 | 用途 |
 |---|---|
 | 单站测试 | 任意 URL + 方法（GET/POST/HEAD）+ 自定义 Header，看状态码/耗时/响应体。输入框带默认地址列表与 × 清空按钮。 |
 | 批量测试 | 粘贴 `名称 \| URL` 清单（或一键载入默认清单），批量探测存活并汇总。 |
 | MacCMS 结构 | 输入资源站根路径，① 列分类 → ② 列视频 → ③ 点 vod_id 下钻播放源并做 HEAD 检测。三步各自成卡片。 |
+| 默认资源列表 | 展示 `STATIONS` 全部默认站点，点击地址复制，可一键载入批量测试 / 复制全部。 |
+| Python 引擎测试 | 粘贴 TVBox / 影视仓 的 py 引擎代码，后端用桩替掉 `base.spider`，调用其 `homeContent`/`detailContent`/`playerContent` 等方法，并做返回结构（schema）校验；支持「运行全链路」一键走 home→detail→player。 |
+| 配置生成 | 把 `名称 \| URL` 形式的已订阅点播源（MacCMS 标准接口）生成 TVBox / 影视仓 配置 JSON。支持单源/多源、全局类型与可搜索开关、可选壁纸与 spider 代码，一键「复制 JSON」或「下载 tvbox.json」。 |
 
 ## 维护默认地址清单
 
@@ -39,7 +42,7 @@ console.html     # 前端：原生 HTML/JS，离线可用
 README.md        # 本文档
 ```
 
-后端接口：`GET /`（页面）、`POST /api/test`、`POST /api/batch`、`POST /api/maccms`。
+后端接口：`GET /`（页面）、`POST /api/test`、`POST /api/batch`、`POST /api/maccms`、`POST /api/engine`（执行 Python 引擎代码，会运行你提供的任意代码，仅用于本地、且你信任的引擎）。
 
 ## 说明与免责
 
